@@ -25,15 +25,12 @@ def insert_song_lengths(cur, conn, songs):
     for i in songs:
         cur.execute("INSERT OR REPLACE INTO Lengths (title, artist, category, length) VALUES (?,?,?,?)", (i[0], i[1], i[2], i[3]))
     conn.commit()
+    print('Song lengths inserted')
     
 def main():
     cur, conn = setUpDatabase('billboard.db')
     create_bb_tables(cur, conn)
     songs = unique_songs(get_data(get_all_songs()))
-    print(len(songs))
-    unique = set(songs)
-    print(songs)
-    print(unique)
-    #insert_song_lengths(cur, conn, songs)
+    insert_song_lengths(cur, conn, songs)
 
 main()
