@@ -3,6 +3,8 @@ import sqlite3
 import json
 import os
 import requests
+from web import *
+from billboardapi import *
 
 def setUpDatabase(db_name):
     path = os.path.dirname(os.path.abspath(__file__))
@@ -10,30 +12,28 @@ def setUpDatabase(db_name):
     cur = conn.cursor()
     return cur, conn
 
-def create_tables(cur, conn):
-    '''cur.execute("DROP TABLE IF EXISTS Apple-Listens")
-    cur.execute("DROP TABLE IF EXISTS Spotify-Listens")
-    cur.execute("DROP TABLE IF EXISTS Apple-Lengths")
-    cur.execute("DROP TABLE IF EXISTS Spotify-Lengths")'''
 
-    cur.execute("CREATE TABLE Apple-Lengths (name TEXT PRIMARY KEY length TEXT")
-    cur.execute("CREATE TABLE Spotify-Lengths (name TEXT PRIMARY KEY length TEXT")
-    cur.execute("CREATE TABLE Apple-Listens (name TEXT PRIMARY KEY listens NUMBER")
-    cur.execute("CREATE TABLE Spotify-Listens (name TEXT PRIMARY KEY listens NUMBER")
+def create_bb_tables(cur, conn):
+    #cur.execute('DROP TABLE IF EXISTS Lengths')
+    #cur.execute('DROP TABLE IF EXISTS Lyrics')
+    cur.execute("CREATE TABLE IF NOT EXISTS Lengths (title TEXT PRIMARY KEY, artist TEXT, category TEXT, length TEXT)")
+    cur.execute("CREATE TABLE IF NOT EXISTS Lyrics (title TEXT PRIMARY KEY, artist TEXT, category TEXT, lyrics INTEGER)")
+    print('database created')
+    conn.commit()
 
+def insert_song_lengths(cur, conn, songs):
+    for i in songs:
+        cur.execute("INSERT OR REPLACE INTO Lengths (title, artist, category, length) VALUES (?,?,?,?)", (i[0], i[1], i[2], i[3]))
     conn.commit()
     
-def insert_data(cur, conn, data):
-    #data should be a dictionary with keys being the table names and values being a list of tuples (name, length/listens)
-    for table in data:
-        for song in data[table]:            
-            if table.find('lengths') != -1:
-                cur.execute("INSERT INTO " + table + " (name, length) VALUES (?,?)", (song[0]), song[1]))
-            else:
-                cur.execute("INSERT INTO " + table + " (name, listens) VALUES (?,?)", (song[0]), song[1]))
-    conn.commit()
-
-
 def main():
-    cur, conn = setUpDatabase('music.db')
-    create_tables(cur, conn)
+    cur, conn = setUpDatabase('billboard.db')
+    create_bb_tables(cur, conn)
+    songs = unique_songs(get_data(get_all_songs()))
+    print(len(songs))
+    unique = set(songs)
+    print(songs)
+    print(unique)
+    #insert_song_lengths(cur, conn, songs)
+
+main()
