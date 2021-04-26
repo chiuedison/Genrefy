@@ -21,9 +21,11 @@ def create_bb_tables(cur, conn):
     print('database created')
     conn.commit()
 
-def insert_song_lengths(cur, conn, songs):
+def insert_song_lengths(cur, conn, songs, data_count):
     for i in songs:
-        cur.execute("INSERT OR REPLACE INTO Lengths (title, artist, category, length) VALUES (?,?,?,?)", (i[0], i[1], i[2], i[3]))
+        data_count += cur.execute("INSERT OR REPLACE INTO Lengths (title, artist, category, length) VALUES (?,?,?,?)", (i[0], i[1], i[2], i[3])).rowcount
+        if data_count == 25:
+            break
     conn.commit()
     print('Song lengths inserted')
     
@@ -31,6 +33,9 @@ def main():
     cur, conn = setUpDatabase('billboard.db')
     create_bb_tables(cur, conn)
     songs = unique_songs(get_data(get_all_songs()))
-    insert_song_lengths(cur, conn, songs)
+    data_count = 0
+    insert_song_lengths(cur, conn, songs, data_count)
+    if data_count == 25:
+        return
 
 main()
