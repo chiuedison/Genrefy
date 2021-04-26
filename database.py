@@ -22,6 +22,10 @@ def create_bb_tables(cur, conn):
     conn.commit()
 
 def insert_song_lengths(cur, conn, songs, data_count):
+    cur.execute('SELECT COUNT(*) from Lengths')
+    table_rows = cur.fetchone()
+    if table_rows == 106:
+        return
     for i in songs:
         data_count += cur.execute("INSERT OR REPLACE INTO Lengths (title, artist, category, length) VALUES (?,?,?,?)", (i[0], i[1], i[2], i[3])).rowcount
         if data_count == 25:
