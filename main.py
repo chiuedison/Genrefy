@@ -5,6 +5,7 @@ import plotly
 import database
 import api
 import web
+import lyrics
 
 
 def main():
@@ -14,6 +15,10 @@ def main():
     songs = unique_songs(get_data(get_all_songs()))
     data_count = 0
     insert_song_lengths(cur, conn, songs, data_count)
+    if data_count == 25:
+        return
+    lyrics = web_songs(songs)
+    insert_song_lyrics(cur, conn, lyrics, data_count)
     if data_count == 25:
         return
 

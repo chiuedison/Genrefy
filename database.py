@@ -34,3 +34,13 @@ def insert_song_lengths(cur, conn, songs, data_count):
 
     
 
+def insert_song_lyrics(cur, conn, songs, data_count):
+    cur.execute('SELECT COUNT(*) from Lyrics')
+    table_rows = cur.fetchone()[0]
+    if table_rows == 106:
+        return
+    for i in songs:
+        data_count += cur.execute("INSERT OR IGNORE INTO Lyrics (title, artist, category, lyrics) VALUES (?,?,?,?)", (i[0], i[1], i[2], i[3])).rowcount
+        if data_count == 25:
+            break
+    conn.commit()
