@@ -31,6 +31,8 @@ def get_lyrics(title, artist):
         name = artist.split('+')[0]
     elif artist.find('Duet') != -1:
         name = artist.split('Duet')[0]
+    elif artist.find('With') != -1:
+        name = artist.split('With')[0]
     
     base_url = "https://api.lyrics.ovh/v1/{}/{}"
     request_url = base_url.format(name, title)
