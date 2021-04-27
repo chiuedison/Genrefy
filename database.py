@@ -14,33 +14,53 @@ def setUpDatabase(db_name):
 
 
 def create_bb_tables(cur, conn):
+    #cur.execute('DROP TABLE IF EXISTS Categories')
     #cur.execute('DROP TABLE IF EXISTS Lengths')
     #cur.execute('DROP TABLE IF EXISTS Lyrics')
-    cur.execute("CREATE TABLE IF NOT EXISTS Lengths (title TEXT PRIMARY KEY, artist TEXT, category TEXT, length TEXT)")
+    cur.execute("CREATE TABLE IF NOT EXISTS Categories (title TEXT PRIMARY KEY, artist TEXT, category TEXT)")
+    cur.execute("CREATE TABLE IF NOT EXISTS Lengths (title TEXT PRIMARY KEY, artist TEXT, length TEXT)")
     cur.execute("CREATE TABLE IF NOT EXISTS Lyrics (title TEXT PRIMARY KEY, artist TEXT, category TEXT, lyrics INTEGER)")
     print('database created')
     conn.commit()
 
-def insert_song_lengths(cur, conn, songs, data_count):
-    cur.execute('SELECT COUNT(*) from Lengths')
+
+def insert_song_categories(cur, conn, songs, data_count):
+    cur.execute('SELECT COUNT(*) from Categories')
     table_rows = cur.fetchone()[0]
-    if table_rows == 106:
-        return
+    if table_rows == 108:
+        return data_count
     for i in songs:
-        data_count += cur.execute("INSERT OR IGNORE INTO Lengths (title, artist, category, length) VALUES (?,?,?,?)", (i[0], i[1], i[2], i[3])).rowcount
+        data_count += cur.execute("INSERT OR IGNORE INTO Categories (title, artist, category) VALUES (?,?,?)", (i[0], i[1], i[2])).rowcount
+
         if data_count == 25:
             break
     conn.commit()
+    return data_count
+
+
+def insert_song_lengths(cur, conn, songs, data_count):
+    cur.execute('SELECT COUNT(*) from Lengths')
+    table_rows = cur.fetchone()[0]
+    if table_rows == 108:
+        return data_count
+    for i in songs:
+        data_count += cur.execute("INSERT OR IGNORE INTO Lengths (title, artist, length) VALUES (?,?,?)", (i[0], i[1], i[3])).rowcount
+        if data_count == 25:
+            break
+    conn.commit()
+    return data_count
+
 
     
 
 def insert_song_lyrics(cur, conn, songs, data_count):
     cur.execute('SELECT COUNT(*) from Lyrics')
     table_rows = cur.fetchone()[0]
-    if table_rows == 106:
-        return
+    if table_rows == 108:
+        return data_count
     for i in songs:
         data_count += cur.execute("INSERT OR IGNORE INTO Lyrics (title, artist, category, lyrics) VALUES (?,?,?,?)", (i[0], i[1], i[2], i[3])).rowcount
         if data_count == 25:
             break
     conn.commit()
+    return data_count
