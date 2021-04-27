@@ -8,7 +8,7 @@ from billboardapi import *
 def get_song_lengths(songs, url):
     r = requests.get(url)
     soup = BeautifulSoup(r.text, 'html.parser')
-    rows = soup.find_all('div', class_='row track web-preview song')
+    rows = soup.find_all('div', class_='songs-list-row songs-list-row--web-preview web-preview songs-list-row--two-lines songs-list-row--song')
     l = []
     for title in songs:
         for row in rows:
@@ -16,7 +16,7 @@ def get_song_lengths(songs, url):
             name = str(song.text).strip().replace('’', '')
             search = title[0].replace("'", "")      
             if name.lower().find(search.lower()) != -1:
-                time = row.find('div', class_='time-data').text
+                time = row.find('div', class_='songs-list-row__length').text
                 time = time.strip()
                 l.append((title[0], title[1], time))
                 break
