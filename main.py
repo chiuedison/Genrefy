@@ -4,6 +4,7 @@ from database import *
 from web import *
 from lyrics import *
 from calculations import *
+from plot import *
 
 
 def main():
@@ -24,7 +25,12 @@ def main():
     if data_count == 25:
         return'''
 
-    avg_ratio_of_category(cur, conn, 'Latin')
+    #write_avg_ratio_of_category(cur, conn, 'Latin')
+
+    plot_lengths(cur, conn)
+    plot_lyrics(cur, conn)
+    plot_ratios(cur, conn)
+    print('end')
 
 
 main()

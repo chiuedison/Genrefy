@@ -46,9 +46,10 @@ def write_to_file(average, category):
     f.write('The average ratio of number of lyrics to time in minutes of songs in the ' + category + ' genre is ' + str(average) + ' words per minute.\n')
     f.close()
 
-def avg_ratio_of_category(cur, conn, category):
+def write_avg_ratio_of_category(cur, conn, category):
     lengths_list = select_lengths(cur, conn, category)
     lyrics_list = select_lyrics(cur, conn, category)
     ratios = get_all_ratios(lengths_list, lyrics_list)
     average = average_ratios(ratios)
     write_to_file(average, category)
+    return average
