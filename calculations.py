@@ -10,7 +10,7 @@ def select_lengths(cur, conn, category):
 
 
 def select_lyrics(cur, conn, category):
-    cur.execute('SELECT * FROM Lyrics WHERE category = ?', (category,))
+    cur.execute('SELECT * FROM Num_Lyrics WHERE category = ?', (category,))
     l = cur.fetchall()
     conn.commit()
     return l
